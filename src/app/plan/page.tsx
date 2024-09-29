@@ -106,14 +106,14 @@ const PlanningPage: React.FC = () => {
     try {
       const organizedTrip = organizeTrip(trip);  // Organize the trip data
 
-      // *** OpenAI API Request ***
+      // OpenAI API Request
       const response = await fetch("/api/ai", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(organizedTrip),
       });
 
-      const generatedTrip = await response.json();  // This contains the response from ChatGPT
+      const generatedTrip = await response.json();  // response from ChatGPT
       console.log('Generated Trip:', generatedTrip);
 
       // *** Google Maps API Request ***
@@ -123,10 +123,14 @@ const PlanningPage: React.FC = () => {
         body: JSON.stringify(generatedTrip),  // Pass the generated trip to maps API
       });
 
-      const mapUrls = await mapResponse.json();  // This contains map URLs
+      const mapUrls = await mapResponse.json();  // map URLs
       console.log('Map URLs:', mapUrls);
 
-      // ** Save the trip and map data to state or navigate to Dashboard **
+      // Store the trip data and map URLs in localStorage 
+      localStorage.setItem('tripData', JSON.stringify(generatedTrip));
+      localStorage.setItem('mapUrls', JSON.stringify(mapUrls));
+
+      //  Save the trip and map data to state or navigate to Dashboard 
       router.push('/dashboard');
     } catch (error) {
       console.error("Error submitting trip data:", error);
