@@ -58,10 +58,13 @@ const InterestsForm: React.FC<InterestsFormProps> = ({ onBack, onNext, updateDat
   const handleSelectChange = (selectedOptions: any) => {
     const selectedValues = selectedOptions ? selectedOptions.map((option: any) => option.value) : [];
     setSelectedInterests(selectedValues);
+    console.log('Interests:', selectedOptions);
+    
   };
 
   const handleNext = () => {
     updateData({ selectedInterests });
+    console.log("'{selectedInterests}': ", { selectedInterests });
     onNext();
   };
 
@@ -78,14 +81,14 @@ const InterestsForm: React.FC<InterestsFormProps> = ({ onBack, onNext, updateDat
     }),
     dropdownIndicator: (provided: any) => ({
       ...provided,
-      color: 'black', // Change this to the desired arrow color
+      color: 'black', 
       '&:hover': {
-        color: 'black', // Keep the color consistent on hover
+        color: 'black', 
       },
     }),
     indicatorSeparator: (provided: any) => ({
       ...provided,
-      backgroundColor: 'black', // Set the separator line color to black
+      backgroundColor: 'black', 
     }),
     
   };

@@ -1,5 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
+
 
 // Function to process waypoints (replace spaces with '+' for Google Maps URL)
 const processWaypoint = (waypoint: string): string => {
@@ -94,9 +96,9 @@ const Dashboard: React.FC = () => {
     <div className="flex flex-col h-screen">
 
       <nav className="bg-green-800 text-gray-200 p-4 flex justify-between items-center">
-        <h1 className="font-bold text-xl">Ranger</h1>
+        <Link href="/"><h1 className="font-bold text-xl">Ranger</h1></Link>
         <div className="">
-          <button className="mr-4">Dashboard</button>
+          <Link href="/plan"><button className="mr-4">New Trip</button></Link>
           <button>Logout</button>
         </div>
       </nav>
@@ -122,6 +124,8 @@ const Dashboard: React.FC = () => {
                   </ul>
                 </div>
               ))}
+
+              {index < tripData.trip.days.length - 1 && <hr className="my-4 border-gray-600" />}
             </div>
           ))}
         </div>

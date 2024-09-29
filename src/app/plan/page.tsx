@@ -7,6 +7,7 @@ import DateLocationForm from '@/components/DateLocationForm';
 import InterestsForm from '@/components/InterestsForm';
 import VehicleForm from '@/components/VehicleForm';
 import BudgetForm from '@/components/BudgetForm';
+import Spinner from '@/components/Spinner';
 
 interface Trip {
   dateLocation: {
@@ -39,6 +40,8 @@ interface Trip {
 
 const PlanningPage: React.FC = () => {
   const [currentForm, setCurrentForm] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   // Initialize trip object state
   const [trip, setTrip] = useState<Trip>({
@@ -68,8 +71,6 @@ const PlanningPage: React.FC = () => {
       selectedInterests: [],
     },
   });
-
-  const router = useRouter();
 
   // Handler functions to update specific sections of the trip object
   const updateDateLocation = (data: Trip['dateLocation']) => setTrip(prev => ({ ...prev, dateLocation: data }));
@@ -103,6 +104,8 @@ const PlanningPage: React.FC = () => {
   });
 
   const onSubmit = async () => {
+    setIsLoading(true);
+
     try {
       const organizedTrip = organizeTrip(trip);  // Organize the trip data
 
@@ -130,10 +133,11 @@ const PlanningPage: React.FC = () => {
       localStorage.setItem('tripData', JSON.stringify(generatedTrip));
       localStorage.setItem('mapUrls', JSON.stringify(mapUrls));
 
-      //  Save the trip and map data to state or navigate to Dashboard 
-      router.push('/dashboard');
+      router.push('/confirmation')
     } catch (error) {
       console.error("Error submitting trip data:", error);
+    } finally {
+      setIsLoading(false)
     }
   }; 
 
@@ -149,7 +153,7 @@ const PlanningPage: React.FC = () => {
 
   const onRoute = () => {
     router.push('/'); 
-  };
+  }; 
 
   const getForm = () => {
     switch (currentForm) {
@@ -170,13 +174,20 @@ const PlanningPage: React.FC = () => {
   
 
   return (
-    <div
-      className="font-righteous bg-cover bg-center flex justify-center bg-fixed h-screen"
-      style={{ backgroundImage: `url('/assets/images/form-background-${currentForm}.jpg')` }}
-    >
-      <div className="mb-4">{getForm()}</div>
-    </div>
-  );
+    <>
+      {isLoading ? (
+        <Spinner />  
+       ) : (
+        <div
+          className="font-righteous bg-cover bg-center flex justify-center bg-fixed h-screen"
+          style={{ backgroundImage: `url('/assets/images/form-background-${currentForm}.jpg')` }}
+        >
+          <div className="mb-4">{getForm()}</div>
+        </div>
+      )}
+    </>
+    
+  )
 };
 
 export default PlanningPage;

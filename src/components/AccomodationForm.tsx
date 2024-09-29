@@ -42,6 +42,7 @@ const AccomodationForm: React.FC<AccomodationFormProps> = ({ onBack, onNext, upd
   const handleSelectChange = (selectedOptions: any) => {
     const selectedValues = selectedOptions ? selectedOptions.map((option: any) => option.value) : [];
     setSelectedAccommodations(selectedValues);
+    console.log('Selected values', selectedValues)
   };
 
   // When the user clicks next, send the accommodation data to the parent
@@ -52,6 +53,12 @@ const AccomodationForm: React.FC<AccomodationFormProps> = ({ onBack, onNext, upd
       numChildren,
       numPets,
     });
+    console.log('Selected values', {
+      selectedAccommodations,
+      numAdults,
+      numChildren,
+      numPets,
+    })
     onNext();
   };
 
