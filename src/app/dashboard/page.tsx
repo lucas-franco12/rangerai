@@ -1,7 +1,9 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-
+import { useRouter } from 'next/navigation';
+import { logOut } from '@/utils/firebase'; 
+import Logout from '@/components/Logout'; 
 
 // Function to process waypoints (replace spaces with '+' for Google Maps URL)
 const processWaypoint = (waypoint: string): string => {
@@ -42,55 +44,33 @@ interface MapUrls {
 const Dashboard: React.FC = () => {
   const [tripData, setTripData] = useState<Trip | null>(null);
   const [mapUrls, setMapUrls] = useState<MapUrls | null>(null);
+  const router = useRouter();
+  const [isLogoutModalOpen, setLogoutModalOpen] = useState(false);
 
-  // ** Fetch trip and map data from the server **
+  const handleLogout = async () => {
+    try {
+      await logOut(); 
+      setLogoutModalOpen(false); 
+      router.push('/');
+    } catch (error) {
+      console.log('Error logging out:', error);
+    }
+  }; // <-- Added closing bracket for handleLogout
+
   useEffect(() => {
-    // this approach tried to call a get request to the open ai api. this was not working because dashboard runs on a different server instance than plan
-    // const fetchTripData = async () => {
-    //   try {
-    //     const tripResponse = await fetch('/api/ai', { method: 'GET' });
-    //     if (!tripResponse.ok) {
-    //       throw new Error(`Error fetching trip: ${tripResponse.statusText}`);
-    //     }
-    //     const trip: Trip = await tripResponse.json();
-    //     console.log('Recieved trip:',trip);
-        
-    //     if (trip.trip) {
-    //       setTripData(trip);  // Update the state with trip data
-    //     } else {
-    //       console.error("No trip data available in response:", trip);
-    //     }
-
-    //     // Extract waypoints for Google Maps
-    //     const waypoints = trip.trip.days
-    //       .map((day) => processWaypoint(day.locations[0].location))
-    //       .join('|');
-
-    //     const start = processWaypoint(trip.trip.begin);
-    //     const end = processWaypoint(trip.trip.end);
-
-    //     setMapUrls({
-    //       wholeTrip: `https://www.google.com/maps/embed/v1/directions?key=AIzaSyDR8X_JTgG65Pr5tmdOQVZEhtbpSe9fcl8&origin=${start}&destination=${end}&waypoints=${waypoints}&avoid=tolls|highways`,
-    //     });
-    //   } catch (error) {
-    //     console.error('Error fetching trip data:', error);
-    //   }
-    // };
-
-    // this approach stores the trip data and map urls to local storage in plan and then retrieves it in dashboard
     const storedTripData = localStorage.getItem('tripData');
     const storedMapUrls = localStorage.getItem('mapUrls');
 
     if (storedTripData && storedMapUrls) {
-      // If data is found in localStorage, set the state directly
+      // change to retrieve from database
       setTripData(JSON.parse(storedTripData));
       setMapUrls(JSON.parse(storedMapUrls));
       console.log('Trip data loaded from localStorage');
-      return; // No need to make the API call
+      return; 
     } else {
       console.error("No trip data or map URLs found in localStorage");
-      }
-    }, []);
+    }
+  }, []);
 
   return (
     <div className="flex flex-col h-screen">
@@ -99,7 +79,7 @@ const Dashboard: React.FC = () => {
         <Link href="/"><h1 className="font-bold text-xl">Ranger</h1></Link>
         <div className="">
           <Link href="/plan"><button className="mr-4">New Trip</button></Link>
-          <button>Logout</button>
+          <button onClick={() => setLogoutModalOpen(true)}>Logout</button>
         </div>
       </nav>
 
@@ -109,7 +89,7 @@ const Dashboard: React.FC = () => {
           <h2 className="text-xl font-semibold mb-4">Itinerary</h2>
           {tripData?.trip?.days.map((day, index) => (
             <div key={index} className="mb-6">
-              <h3 className="text-lg font-semibold">Day {day.day}</h3>
+              <h3 className="text-lg font-semibold"> {day.day}</h3>
               <p className="italic">{day.overallsummary}</p>
               {day.locations.map((location, locIndex) => (
                 <div key={locIndex} className="mt-4">
@@ -142,8 +122,15 @@ const Dashboard: React.FC = () => {
           )}
         </div>
       </div>
+
+      <Logout
+        isOpen={isLogoutModalOpen} 
+        onClose={() => setLogoutModalOpen(false)} 
+        onConfirm={handleLogout} 
+      />
     </div>
   );
 };
 
 export default Dashboard;
+

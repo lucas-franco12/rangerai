@@ -13,7 +13,6 @@ const Page: React.FC = () => {
     <>
       <Hero/>
       <Features/>
-      <Testimonials/>
       <Footer/>
     </>
   );

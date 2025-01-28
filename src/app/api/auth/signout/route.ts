@@ -1,14 +1,12 @@
-
-import { signUp } from '@/utils/firebase';
+import { logOut } from '@/utils/firebase';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, password } = await req.json();
-    const userCredential = await signUp(email, password);
-    return NextResponse.json({ user: userCredential.user }, { status: 200 });
+    await logOut();
+    return NextResponse.json({ message: 'Sign out successful' }, { status: 200 });
   } catch (error) {
-    console.error('SignUp Error:', error);
+    console.log('Error signing out:', error)
     return NextResponse.json({ error: (error as Error).message }, { status: 400 });
   }
 }
@@ -24,4 +22,3 @@ export async function PUT(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   return NextResponse.json({ message: 'Method Not Allowed' }, { status: 405 });
 }
-
