@@ -26,8 +26,8 @@ Activities: Very important. Recommend things to do based off of their interests 
 
 {
   "trip": {
-	"begin": "Where the user said they will start the trip",
-	"end": "Where the user said they want to end the trip",
+    "begin": "Where the user said they will start the trip",
+    "end": "Where the user said they want to end the trip",
     "days": [
       {
         "day": "Which day of the trip this is",
@@ -107,16 +107,20 @@ export async function POST(req: NextRequest) {
         // Return the trip plan to the frontend
         return NextResponse.json(tripPlan);
     } catch (error) {
-        console.error("Error generating roadtrip plan:", error.message);
+        if (error instanceof Error) {
+            console.error("Error generating roadtrip plan:", error.message);
+        } else {
+            console.error("Error generating roadtrip plan:", error);
+        }
         return NextResponse.json({
             error: "An error occurred while generating the roadtrip plan. Please try again.",
         });
     }
 }
+
 // GET request handler to retrieve the latest content (not in use)
 export async function GET(req: NextRequest) {
     try {
-        
         if (!latestContent) {
             return NextResponse.json({
                 error: "No content available. Please generate a roadtrip plan first.",
@@ -127,7 +131,11 @@ export async function GET(req: NextRequest) {
             latestContent,
         });
     } catch (error) {
-        console.error("Error retrieving the latest content:", error.message);
+        if (error instanceof Error) {
+            console.error("Error retrieving the latest content:", error.message);
+        } else {
+            console.error("Error retrieving the latest content:", error);
+        }
         return NextResponse.json({
             error: "An error occurred while retrieving the latest content. Please try again.",
         });
