@@ -1,11 +1,11 @@
 {
-    "builds": [
-      {
-        "src": "next.config.js",
-        "use": "@vercel/next"
-      }
-    ],
-    "env": {
-      "NEXT_PUBLIC_FIREBASE_APP_ID": "@next_public_firebase_app_id"
+  "builds": [
+    {
+      "src": "next.config.js",
+      "use": "@vercel/next"
     }
+  ],
+  "env": {
+    "NEXT_PUBLIC_FIREBASE_APP_ID": "1:1078144384298:web:4fed9248bd85eff048b253"
   }
+}
