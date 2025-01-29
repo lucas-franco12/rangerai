@@ -109,12 +109,15 @@ export async function POST(req: NextRequest) {
     } catch (error) {
         if (error instanceof Error) {
             console.error("Error generating roadtrip plan:", error.message);
+            return NextResponse.json({
+                error: "An error occurred while generating the roadtrip plan. Please try again.",
+            });
         } else {
             console.error("Error generating roadtrip plan:", error);
+            return NextResponse.json({
+                error: "An unknown error occurred while generating the roadtrip plan. Please try again.",
+            });
         }
-        return NextResponse.json({
-            error: "An error occurred while generating the roadtrip plan. Please try again.",
-        });
     }
 }
 
@@ -133,11 +136,14 @@ export async function GET(req: NextRequest) {
     } catch (error) {
         if (error instanceof Error) {
             console.error("Error retrieving the latest content:", error.message);
+            return NextResponse.json({
+                error: "An error occurred while retrieving the latest content. Please try again.",
+            });
         } else {
             console.error("Error retrieving the latest content:", error);
+            return NextResponse.json({
+                error: "An unknown error occurred while retrieving the latest content. Please try again.",
+            });
         }
-        return NextResponse.json({
-            error: "An error occurred while retrieving the latest content. Please try again.",
-        });
     }
 }
